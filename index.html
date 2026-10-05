@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Мои финансы</title>
+<style>
+:root{--bg:#eef1f7;--card:#fff;--text:#14213d;--muted:#667089;--line:#dde2ee;--inc:#0b8f63;--inc-bg:#dff5ec;--exp:#d6393f;--exp-bg:#fde8e8;--acc:#3454d1;--acc-bg:#e6ebfc;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1424;--card:#171f35;--text:#e8ecf8;--muted:#9aa5c4;--line:#2a3452;--inc:#3dd6a0;--inc-bg:#12372d;--exp:#ff7b80;--exp-bg:#3d1b24;--acc:#8ea5ff;--acc-bg:#222d52}}
+:root[data-theme="dark"]{--bg:#0e1424;--card:#171f35;--text:#e8ecf8;--muted:#9aa5c4;--line:#2a3452;--inc:#3dd6a0;--inc-bg:#12372d;--exp:#ff7b80;--exp-bg:#3d1b24;--acc:#8ea5ff;--acc-bg:#222d52}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:22px;margin:0 0 16px;font-weight:700}
+h2{font-size:17px;margin:0 0 12px}
+.hero{background:var(--card);border-radius:20px;padding:22px;border:1px solid var(--line);margin-bottom:16px}
+.hero .lbl{color:var(--muted);font-size:14px}
+.bal{font-size:clamp(34px,8vw,52px);font-weight:750;letter-spacing:-.02em;line-height:1.1;margin:2px 0 16px}
+.bar{display:flex;height:12px;border-radius:99px;overflow:hidden;background:var(--line)}
+.bar i{display:block;height:100%;transition:width .4s}
+.bar .bi{background:var(--inc)}.bar .be{background:var(--exp)}
+.sums{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+.sum{flex:1 1 140px;border-radius:14px;padding:12px 14px}
+.sum b{display:block;font-size:20px}
+.sum.i{background:var(--inc-bg);color:var(--inc)}.sum.e{background:var(--exp-bg);color:var(--exp)}
+.sum span{font-size:13px;color:var(--text);opacity:.8}
+.grid{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:860px){.grid{grid-template-columns:340px 1fr;align-items:start}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:14px}
+.seg button{border:0;background:none;padding:10px;border-radius:9px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer}
+.seg button.on.i{background:var(--inc);color:#fff}.seg button.on.e{background:var(--exp);color:#fff}
+label{display:block;font-size:14px;color:var(--muted);margin:10px 0 4px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:inherit}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.btn{width:100%;margin-top:16px;padding:12px;border:0;border-radius:12px;background:var(--acc);color:#fff;font:inherit;font-weight:650;cursor:pointer}
+.btn.ghost{background:var(--acc-bg);color:var(--acc);margin-top:8px;width:auto;padding:9px 14px}
+.err{color:var(--exp);font-size:14px;min-height:20px;margin-top:8px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.filters div{flex:1 1 150px}.filters label{margin-top:0}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.dot{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-weight:700;flex:none}
+.dot.income{background:var(--inc-bg);color:var(--inc)}.dot.expense{background:var(--exp-bg);color:var(--exp)}
+.row .m{flex:1;min-width:0}.row .m b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .m small{color:var(--muted)}
+.amt{font-weight:700;white-space:nowrap}.amt.income{color:var(--inc)}.amt.expense{color:var(--exp)}
+.del{border:0;background:none;color:var(--muted);font-size:20px;cursor:pointer;padding:6px 8px;border-radius:8px}
+.del:hover{color:var(--exp);background:var(--exp-bg)}
+.empty{color:var(--muted);text-align:center;padding:28px 8px}
+.cats{margin-bottom:14px}
+.cat{display:flex;align-items:center;gap:10px;font-size:14px;margin:6px 0}
+.cat span:first-child{width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cat .t{flex:1;height:8px;background:var(--line);border-radius:9px;overflow:hidden}
+.cat .t i{display:block;height:100%;background:var(--exp);border-radius:9px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.help{color:var(--muted);font-size:13px;margin:0 0 8px}
+.tools{margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><h1>Мои финансы</h1><button class="btn ghost" id="theme" style="margin:0" aria-label="Сменить тему">Тема</button></div>
+
+  <section class="hero" aria-live="polite">
+    <div class="lbl" id="scope">Баланс за всё время</div>
+    <div class="bal" id="bal">0 ₽</div>
+    <div class="bar"><i class="bi" id="bi" style="width:0"></i><i class="be" id="be" style="width:0"></i></div>
+    <div class="sums">
+      <div class="sum i"><span>Доход</span><b id="inc">0 ₽</b></div>
+      <div class="sum e"><span>Расходы</span><b id="exp">0 ₽</b></div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Новая операция</h2>
+      <div class="seg" role="group" aria-label="Тип операции">
+        <button class="on e" id="tE" type="button">Расход</button>
+        <button class="i" id="tI" type="button">Доход</button>
+      </div>
+      <label for="cat">Категория</label>
+      <input id="cat" list="cats" placeholder="Например: Еда" autocomplete="off">
+      <datalist id="cats"></datalist>
+      <label for="sum">Сумма, ₽</label>
+      <input id="sum" inputmode="decimal" placeholder="1500">
+      <label for="date">Дата</label>
+      <input id="date" type="date">
+      <div class="err" id="err" role="alert"></div>
+      <button class="btn" id="add" type="button">Добавить расход</button>
+
+      <div class="tools">
+        <h2>Резервная копия</h2>
+        <p class="help">Данные сами сохраняются в этом браузере. Чтобы перенести их на другое устройство, скопируйте текст и вставьте его там.</p>
+        <button class="btn ghost" id="exportB" type="button">Показать копию</button>
+        <div id="backup" hidden>
+          <textarea id="bk" rows="5" aria-label="Данные в формате JSON"></textarea>
+          <button class="btn ghost" id="importB" type="button">Загрузить из текста</button>
+          <div class="err" id="bkMsg"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Операции</h2>
+      <div class="filters">
+        <div><label for="fc">Категория</label><select id="fc"><option value="">Все</option></select></div>
+        <div><label for="fm">Месяц</label><input id="fm" type="month"></div>
+        <div style="flex:0 0 auto;align-self:end"><button class="btn ghost" id="reset" type="button" style="margin:0">Сбросить</button></div>
+      </div>
+      <div class="cats" id="breakdown"></div>
+      <div id="list"></div>
+    </section>
+  </div>
+</div>
+
+<script>
+var KEY = "finance_tracker_v1";
+var ops = [], type = "expense", fc = "", fm = "";
+var $ = function (id) { return document.getElementById(id); };
+
+function load() {
+  try { var r = localStorage.getItem(KEY); if (r) ops = JSON.parse(r); } catch (e) { ops = []; }
+  if (!Array.isArray(ops)) ops = [];
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(ops)); } catch (e) {} }
+function money(n) { return Math.round(n * 100) / 100 === Math.round(n) ? Math.round(n).toLocaleString("ru-RU") + " ₽" : n.toLocaleString("ru-RU", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ₽"; }
+function today() { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function fdate(s) { var p = s.split("-"); return p[2] + "." + p[1] + "." + p[0]; }
+function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
+
+function setType(t) {
+  type = t;
+  $("tE").className = t === "expense" ? "on e" : "e";
+  $("tI").className = t === "income" ? "on i" : "i";
+  $("add").textContent = t === "income" ? "Добавить доход" : "Добавить расход";
+}
+
+function render() {
+  var cats = Array.from(new Set(ops.map(function (o) { return o.category; }))).sort();
+  var sel = $("fc"); sel.innerHTML = "";
+  var all = el("option", "", "Все"); all.value = ""; sel.appendChild(all);
+  cats.forEach(function (c) { var o = el("option", "", c); o.value = c; sel.appendChild(o); });
+  if (cats.indexOf(fc) < 0) fc = "";
+  sel.value = fc;
+  var dl = $("cats"); dl.innerHTML = "";
+  cats.forEach(function (c) { var o = document.createElement("option"); o.value = c; dl.appendChild(o); });
+
+  var view = ops.filter(function (o) {
+    return (!fc || o.category === fc) && (!fm || o.date.indexOf(fm) === 0);
+  }).sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : b.id - a.id; });
+
+  var inc = 0, exp = 0, byCat = {};
+  view.forEach(function (o) {
+    if (o.type === "income") inc += o.amount;
+    else { exp += o.amount; byCat[o.category] = (byCat[o.category] || 0) + o.amount; }
+  });
+  var bal = inc - exp;
+  $("bal").textContent = money(bal);
+  $("bal").style.color = bal < 0 ? "var(--exp)" : "var(--text)";
+  $("inc").textContent = money(inc);
+  $("exp").textContent = money(exp);
+  var tot = inc + exp;
+  $("bi").style.width = tot ? inc / tot * 100 + "%" : "0";
+  $("be").style.width = tot ? exp / tot * 100 + "%" : "0";
+  var scope = [];
+  if (fc) scope.push("категория «" + fc + "»");
+  if (fm) scope.push("месяц " + fm);
+  $("scope").textContent = scope.length ? "Баланс: " + scope.join(", ") : "Баланс за всё время";
+
+  var bd = $("breakdown"); bd.innerHTML = "";
+  Object.keys(byCat).sort(function (a, b) { return byCat[b] - byCat[a]; }).slice(0, 5).forEach(function (c) {
+    var r = el("div", "cat"), t = el("div", "t"), i = el("i");
+    i.style.width = byCat[c] / exp * 100 + "%";
+    t.appendChild(i);
+    r.appendChild(el("span", "", c)); r.appendChild(t); r.appendChild(el("span", "", money(byCat[c])));
+    bd.appendChild(r);
+  });
+
+  var list = $("list"); list.innerHTML = "";
+  if (!view.length) {
+    list.appendChild(el("div", "empty", ops.length ? "По этим фильтрам операций нет. Нажмите «Сбросить»." : "Пока пусто. Добавьте первую операцию слева."));
+    return;
+  }
+  view.forEach(function (o) {
+    var r = el("div", "row");
+    r.appendChild(el("div", "dot " + o.type, o.type === "income" ? "+" : "−"));
+    var m = el("div", "m"); m.appendChild(el("b", "", o.category)); m.appendChild(el("small", "", fdate(o.date)));
+    r.appendChild(m);
+    r.appendChild(el("div", "amt " + o.type, (o.type === "income" ? "+" : "−") + money(o.amount)));
+    var d = el("button", "del", "×"); d.type = "button"; d.setAttribute("aria-label", "Удалить операцию " + o.category);
+    d.onclick = function () { ops = ops.filter(function (x) { return x.id !== o.id; }); save(); render(); };
+    r.appendChild(d);
+    list.appendChild(r);
+  });
+}
+
+$("tE").onclick = function () { setType("expense"); };
+$("tI").onclick = function () { setType("income"); };
+$("add").onclick = function () {
+  var c = $("cat").value.trim(), s = parseFloat($("sum").value.replace(/\s/g, "").replace(",", ".")), d = $("date").value || today();
+  if (!c) { $("err").textContent = "Укажите категорию, например «Еда»."; return; }
+  if (!(s > 0)) { $("err").textContent = "Введите сумму больше нуля."; return; }
+  $("err").textContent = "";
+  ops.push({ id: Date.now() + Math.floor(Math.random() * 1000), type: type, category: c, amount: s, date: d });
+  save();
+  $("cat").value = ""; $("sum").value = "";
+  render();
+  $("cat").focus();
+};
+["cat", "sum"].forEach(function (id) { $(id).addEventListener("keydown", function (e) { if (e.key === "Enter") $("add").click(); }); });
+$("fc").onchange = function () { fc = this.value; render(); };
+$("fm").onchange = function () { fm = this.value; render(); };
+$("reset").onclick = function () { fc = ""; fm = ""; $("fm").value = ""; render(); };
+$("exportB").onclick = function () {
+  var b = $("backup"); b.hidden = !b.hidden;
+  $("bk").value = JSON.stringify(ops);
+  $("exportB").textContent = b.hidden ? "Показать копию" : "Скрыть копию";
+};
+$("importB").onclick = function () {
+  try {
+    var data = JSON.parse($("bk").value);
+    if (!Array.isArray(data)) throw 0;
+    data = data.filter(function (o) { return o && (o.type === "income" || o.type === "expense") && o.category && o.amount > 0 && /^\d{4}-\d{2}-\d{2}$/.test(o.date); })
+      .map(function (o, i) { return { id: o.id || Date.now() + i, type: o.type, category: String(o.category), amount: +o.amount, date: o.date }; });
+    ops = data; save(); render();
+    $("bkMsg").style.color = "var(--inc)"; $("bkMsg").textContent = "Загружено операций: " + data.length;
+  } catch (e) {
+    $("bkMsg").style.color = "var(--exp)"; $("bkMsg").textContent = "Не получилось прочитать текст. Вставьте копию целиком.";
+  }
+};
+$("theme").onclick = function () {
+  var r = document.documentElement, dark = getComputedStyle(r).getPropertyValue("--bg").trim() === "#0e1424";
+  r.setAttribute("data-theme", dark ? "light" : "dark");
+};
+
+$("date").value = today();
+load(); render();
+</script>
+</body>
+</html>
